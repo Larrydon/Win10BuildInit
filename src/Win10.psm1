@@ -142,6 +142,12 @@ Function DisableWiFiSense {
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" -Name "AutoConnectAllowedOEM" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" -Name "WiFISenseAllowed" -Type DWord -Value 0
+	
+	#2022-06-13 Larry Add
+	Stop-Process -Name "explorer" -Force -ErrorAction SilentlyContinue
+	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Feeds" -Name "ShellFeedsTaskbarViewMode" -Type DWord -Value 2
+	Start-Sleep -s 2
+	Write-Output "Disabling Feeds..."
 }
 
 # Enable Wi-Fi Sense
@@ -157,6 +163,9 @@ Function EnableWiFiSense {
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots" -Name "Value" -Type DWord -Value 1
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" -Name "AutoConnectAllowedOEM" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" -Name "WiFISenseAllowed" -ErrorAction SilentlyContinue
+	
+	#2022-06-13 Larry Add
+	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Feeds" -Name "ShellFeedsTaskbarViewMode" -Type DWord -Value 0
 }
 
 # Disable SmartScreen Filter
@@ -252,7 +261,7 @@ Function EnableAppSuggestions {
 }
 
 # Disable Activity History feed in Task View
-# Note: The checkbox "Store my activity history on this device" ("Let Windows collect my activities from this PC" on older versions) remains checked even when the function is disabled
+# Note: The checkbox "Let Windows collect my activities from this PC" remains checked even when the function is disabled
 Function DisableActivityHistory {
 	Write-Output "Disabling Activity History..."
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableActivityFeed" -Type DWord -Value 0
@@ -931,6 +940,12 @@ Function DisableDefender {
 	} ElseIf ([System.Environment]::OSVersion.Version.Build -ge 15063) {
 		Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "SecurityHealth" -ErrorAction SilentlyContinue
 	}
+	
+	#2022-06-13 Larry Add
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -Name "DisableRealtimeMonitoring" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableBehaviorMonitoring" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableOnAccessProtection" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableScanOnRealtimeEnable" -Type DWord -Value 1	
 }
 
 # Enable Windows Defender
@@ -944,6 +959,12 @@ Function EnableDefender {
 	} ElseIf ([System.Environment]::OSVersion.Version.Build -ge 17763) {
 		Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "SecurityHealth" -Type ExpandString -Value "%windir%\system32\SecurityHealthSystray.exe"
 	}
+	
+	#2022-06-13 Larry Add
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -Name "DisableRealtimeMonitoring"
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableBehaviorMonitoring"
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableOnAccessProtection"
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection" -Name "DisableScanOnRealtimeEnable"
 }
 
 # Disable Windows Defender Cloud
@@ -1389,6 +1410,18 @@ Function DisableRemoteDesktop {
 	Disable-NetFirewallRule -Name "RemoteDesktop*"
 }
 
+#2022-06-22 Larry Add EnableGuestAccess
+Function EnableGuestAccess {
+	Write-Output "Enabling Guest Access..."
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" -Name "AllowInsecureGuestAuth" -Type DWord -Value 1
+}
+
+#2022-06-22 Larry Add DisableGuestAccess
+Function DisableGuestAccess {
+	Write-Output "Disabling Guest Access..."
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" -Name "AllowInsecureGuestAuth" -Type DWord -Value 0
+}
+
 ##########
 #endregion Network Tweaks
 ##########
@@ -1711,6 +1744,13 @@ Function EnableHibernation {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings" -Name "ShowHibernateOption" -Type DWord -Value 1
+	
+	#2022-06-13 Larry Add
+	powercfg /setactive 381b4222-f694-41f0-9685-ff5bb260df2e
+	powercfg /setacvalueindex SCHEME_CURRENT 4f971e89-eebd-4455-a8de-9e59040e7347 7648efa3-dd9c-4e3e-b566-50f929386280 3
+	powercfg /setdcvalueindex SCHEME_CURRENT 4f971e89-eebd-4455-a8de-9e59040e7347 7648efa3-dd9c-4e3e-b566-50f929386280 3
+	powercfg /setactive SCHEME_CURRENT
+	
 	powercfg /HIBERNATE ON 2>&1 | Out-Null
 }
 
@@ -1722,6 +1762,13 @@ Function DisableHibernation {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings" -Name "ShowHibernateOption" -Type DWord -Value 0
+	
+	#2022-06-13 Larry Add
+	powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+	powercfg /setacvalueindex SCHEME_CURRENT 4f971e89-eebd-4455-a8de-9e59040e7347 7648efa3-dd9c-4e3e-b566-50f929386280 0
+	powercfg /setdcvalueindex SCHEME_CURRENT 4f971e89-eebd-4455-a8de-9e59040e7347 7648efa3-dd9c-4e3e-b566-50f929386280 0
+	powercfg /setactive SCHEME_CURRENT
+	
 	powercfg /HIBERNATE OFF 2>&1 | Out-Null
 }
 
@@ -1994,6 +2041,34 @@ Function ShowTaskbarSearchBox {
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" -Name "SearchboxTaskbarMode" -Type DWord -Value 2
 }
 
+#2022-06-22 Larry Add SetFavoriteTaskbar
+Function SetFavoriteTaskbar {
+	Write-Output "Set Favorite Taskbar..."
+	Start-Process -FilePath "runbat\FavoriteTaskbar.bat" -Wait -WindowStyle Hidden
+	Start-Sleep -s 2
+}
+
+#2022-06-22 Larry Add SetFactoryDefaultTaskbar
+Function SetFactoryDefaultTaskbar {
+	Write-Output "Set Factory Default Taskbar..."
+	Start-Process -FilePath "runbat\FactoryDefaultTaskbar.bat" -Wait -WindowStyle Hidden
+	Start-Sleep -s 2
+}
+
+#2022-06-22 Larry Add SetTaskbarUP
+Function SetTaskbarUP {
+	Write-Output "Set Taskbar Direction UP..."
+	Start-Process -FilePath "runbat\TaskBar_UP.bat" -Wait -WindowStyle Hidden
+	Start-Sleep -s 2
+}
+
+#2022-06-22 Larry Add SetTaskbarDOWN
+Function SetTaskbarDOWN {
+	Write-Output "Set Taskbar Direction DOWN..."
+	Start-Process -FilePath "runbat\TaskBar_DOWN.bat" -Wait -WindowStyle Hidden
+	Start-Sleep -s 2
+}
+
 # Hide Task View button
 Function HideTaskView {
 	Write-Output "Hiding Task View button..."
@@ -2224,7 +2299,15 @@ Function SetVisualFXPerformance {
 	Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "DragFullWindows" -Type String -Value 0
 	Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "MenuShowDelay" -Type String -Value 0
 	Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "UserPreferencesMask" -Type Binary -Value ([byte[]](144,18,3,128,16,0,0,0))
-	Set-ItemProperty -Path "HKCU:\Control Panel\Desktop\WindowMetrics" -Name "MinAnimate" -Type String -Value 0
+	
+	#2022-06-13 Larry Add
+	If (!(Test-Path "HKCU:\Software\Policies\Microsoft\Windows\DWM")) {
+		New-Item -Path "HKCU:\Software\Policies\Microsoft\Windows\DWM" -Force | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Windows\DWM" -Name "DisallowAnimations" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "TurnOffSPIAnimations" -Type DWord -Value 1
+	
+	Set-ItemProperty -Path "HKCU:\Control Panel\Desktop\WindowMetrics" -Name "MinAnimate" -Type String -Value 0	
 	Set-ItemProperty -Path "HKCU:\Control Panel\Keyboard" -Name "KeyboardDelay" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ListviewAlphaSelect" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ListviewShadow" -Type DWord -Value 0
@@ -2239,6 +2322,11 @@ Function SetVisualFXAppearance {
 	Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "DragFullWindows" -Type String -Value 1
 	Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "MenuShowDelay" -Type String -Value 400
 	Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "UserPreferencesMask" -Type Binary -Value ([byte[]](158,30,7,128,18,0,0,0))
+	
+	#2022-06-13 Larry Add
+	Remove-Item -Path "HKCU:\Software\Policies\Microsoft\Windows\DWM" -Recurse -ErrorAction SilentlyContinue
+	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "TurnOffSPIAnimations" -ErrorAction SilentlyContinue
+		
 	Set-ItemProperty -Path "HKCU:\Control Panel\Desktop\WindowMetrics" -Name "MinAnimate" -Type String -Value 1
 	Set-ItemProperty -Path "HKCU:\Control Panel\Keyboard" -Name "KeyboardDelay" -Type DWord -Value 1
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ListviewAlphaSelect" -Type DWord -Value 1
@@ -2297,6 +2385,22 @@ Function RemoveENKeyboard {
 	Write-Output "Removing secondary en-US keyboard..."
 	$langs = Get-WinUserLanguageList
 	Set-WinUserLanguageList ($langs | Where-Object {$_.LanguageTag -ne "en-US"}) -Force
+}
+
+#2022-06-21 Larry Set Default Keyboard ENKeyboard and change HotKey
+Function DefaultENKeyboard {
+	Write-Output "Set Default Keyboard used en-US keyboard..."
+	Set-ItemProperty -Path "HKCU:\Keyboard Layout\Preload" -Name "1" -Type String -Value "00000409"
+	Set-ItemProperty -Path "HKCU:\Keyboard Layout\Toggle" -Name "HotKey" -Type String -Value "2"
+	Set-ItemProperty -Path "HKCU:\Keyboard Layout\Toggle" -Name "Language Hotkey" -Type String -Value "2"
+}
+
+#2022-06-21 Larry Set Default Keyboard CTKeyboard and change HotKey
+Function DefaultCTKeyboard {
+	Write-Output "Set Keyboard Default used Chinese (Traditional) keyboard..."
+	Set-ItemProperty -Path "HKCU:\Keyboard Layout\Preload" -Name "1" -Type String -Value "00000404"
+	Set-ItemProperty -Path "HKCU:\Keyboard Layout\Toggle" -Name "HotKey" -Type String -Value "2"
+	Set-ItemProperty -Path "HKCU:\Keyboard Layout\Toggle" -Name "Language Hotkey" -Type String -Value "2"
 }
 
 # Enable NumLock after startup
@@ -3198,6 +3302,9 @@ Function UninstallOneDrive {
 	}
 	Remove-Item -Path "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Recurse -ErrorAction SilentlyContinue
 	Remove-Item -Path "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Recurse -ErrorAction SilentlyContinue
+	
+	#2022-06-21 Larry Delete ScheduledTask OneDrive Reporting Task-S-1-5-21-2196777684-650324571-2708204615-1001
+	Unregister-ScheduledTask -TaskName "OneDrive Reporting Task-S-1-5-21-2196777684-650324571-2708204615-1001" -Confirm:$false -ErrorAction SilentlyContinue
 }
 
 # Install OneDrive - Not applicable to Server
@@ -3536,6 +3643,10 @@ Function DisableEdgePreload {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\TabPreloader" -Force | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\TabPreloader" -Name "AllowTabPreloading" -Type DWord -Value 0
+	
+	#2022-06-20 Larry Add Disable MicrosoftEdgeTask
+	Disable-ScheduledTask -TaskName "\MicrosoftEdgeUpdateTaskMachineCore" | Out-Null
+	Disable-ScheduledTask -TaskName "\MicrosoftEdgeUpdateTaskMachineUA" | Out-Null
 }
 
 # Enable Edge preload after Windows startup

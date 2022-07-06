@@ -86,16 +86,17 @@ SetCurrentNetworkPrivate        # SetCurrentNetworkPublic
 # DisableMSNetClient            # EnableMSNetClient
 # DisableQoS                    # EnableQoS
 # DisableIPv4                   # EnableIPv4
-# DisableIPv6                   # EnableIPv6
+DisableIPv6                   # EnableIPv6
 # DisableNCSIProbe              # EnableNCSIProbe
 # DisableConnectionSharing      # EnableConnectionSharing
 DisableRemoteAssistance         # EnableRemoteAssistance
 # EnableRemoteDesktop           # DisableRemoteDesktop
+EnableGuestAccess               # DisableGuestAccess
 
 ### Service Tweaks ###
 # DisableUpdateMSRT             # EnableUpdateMSRT
 # DisableUpdateDriver           # EnableUpdateDriver
-EnableUpdateMSProducts          # DisableUpdateMSProducts
+# EnableUpdateMSProducts          # DisableUpdateMSProducts
 # DisableUpdateAutoDownload     # EnableUpdateAutoDownload
 DisableUpdateRestart            # EnableUpdateRestart
 DisableMaintenanceWakeUp        # EnableMaintenanceWakeUp
@@ -104,18 +105,18 @@ DisableSharedExperiences        # EnableSharedExperiences
 # EnableClipboardHistory        # DisableClipboardHistory
 DisableAutoplay                 # EnableAutoplay
 DisableAutorun                  # EnableAutorun
-# DisableRestorePoints          # EnableRestorePoints
+DisableRestorePoints          # EnableRestorePoints
 # EnableStorageSense            # DisableStorageSense
-# DisableDefragmentation        # EnableDefragmentation
-# DisableSuperfetch             # EnableSuperfetch
-# DisableIndexing               # EnableIndexing
+DisableDefragmentation        # EnableDefragmentation
+DisableSuperfetch             # EnableSuperfetch
+DisableIndexing               # EnableIndexing
 # DisableRecycleBin             # EnableRecycleBin
 EnableNTFSLongPaths             # DisableNTFSLongPaths
 # DisableNTFSLastAccess         # EnableNTFSLastAccess
 # SetBIOSTimeUTC                # SetBIOSTimeLocal
-# EnableHibernation             # DisableHibernation
-# DisableSleepButton            # EnableSleepButton
-# DisableSleepTimeout           # EnableSleepTimeout
+DisableHibernation            # EnableHibernation             # DisableHibernation
+DisableSleepButton            # EnableSleepButton
+DisableSleepTimeout           # EnableSleepTimeout
 # DisableFastStartup            # EnableFastStartup
 # DisableAutoRebootOnCrash      # EnableAutoRebootOnCrash
 
@@ -130,11 +131,13 @@ DisableLockScreenBlur           # EnableLockScreenBlur
 DisableAccessibilityKeys        # EnableAccessibilityKeys
 ShowTaskManagerDetails          # HideTaskManagerDetails
 ShowFileOperationsDetails       # HideFileOperationsDetails
-# EnableFileDeleteConfirm       # DisableFileDeleteConfirm
+EnableFileDeleteConfirm       # DisableFileDeleteConfirm
 HideTaskbarSearch               # ShowTaskbarSearchIcon         # ShowTaskbarSearchBox
+SetFavoriteTaskbar            # SetFactoryDefaultTaskbar      # SetFavoriteTaskbar
+SetTaskbarUP                  # SetTaskbarDOWN                # SetTaskbarUP 
 HideTaskView                    # ShowTaskView
-ShowSmallTaskbarIcons           # ShowLargeTaskbarIcons
-SetTaskbarCombineWhenFull       # SetTaskbarCombineNever        # SetTaskbarCombineAlways
+# ShowSmallTaskbarIcons          # ShowLargeTaskbarIcons
+SetTaskbarCombineAlways         # SetTaskbarCombineWhenFull       # SetTaskbarCombineNever        # SetTaskbarCombineAlways
 HideTaskbarPeopleIcon           # ShowTaskbarPeopleIcon
 ShowTrayIcons                   # HideTrayIcons
 # ShowSecondsInTaskbar          # HideSecondsFromTaskbar
@@ -151,7 +154,8 @@ SetVisualFXPerformance          # SetVisualFXAppearance
 # SetAppsDarkMode               # SetAppsLightMode
 # SetSystemLightMode            # SetSystemDarkMode
 # AddENKeyboard                 # RemoveENKeyboard
-# EnableNumlock                 # DisableNumlock
+DefaultENKeyboard             # DefaultCTKeyboard
+EnableNumlock                 # DisableNumlock
 # DisableEnhPointerPrecision    # EnableEnhPointerPrecision
 # SetSoundSchemeNone            # SetSoundSchemeDefault
 # DisableStartupSound           # EnableStartupSound
@@ -181,7 +185,7 @@ HideQuickAccess                 # ShowQuickAccess
 # HideRecycleBinFromDesktop     # ShowRecycleBinOnDesktop
 ShowThisPCOnDesktop             # HideThisPCFromDesktop
 # ShowUserFolderOnDesktop       # HideUserFolderFromDesktop
-# ShowControlPanelOnDesktop     # HideControlPanelFromDesktop
+ShowControlPanelOnDesktop     # HideControlPanelFromDesktop
 # ShowNetworkOnDesktop          # HideNetworkFromDesktop
 # HideDesktopIcons              # ShowDesktopIcons
 # ShowBuildNumberOnDesktop      # HideBuildNumberFromDesktop
@@ -235,7 +239,7 @@ DisableMediaSharing             # EnableMediaSharing
 # UninstallSSHClient            # InstallSSHClient
 # InstallSSHServer              # UninstallSSHServer
 # InstallTelnetClient           # UninstallTelnetClient
-# InstallNET23                  # UninstallNET23
+InstallNET23                  # UninstallNET23
 SetPhotoViewerAssociation       # UnsetPhotoViewerAssociation
 AddPhotoViewerOpenWith          # RemovePhotoViewerOpenWith
 # UninstallPDFPrinter           # InstallPDFPrinter
