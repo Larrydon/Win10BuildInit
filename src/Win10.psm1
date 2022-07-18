@@ -1239,6 +1239,21 @@ Function EnableSMB1 {
 	Set-SmbServerConfiguration -EnableSMB1Protocol $true -Force
 }
 
+# 2022-07-18 Larry Add EnableSMB1ByDISM
+Function EnableSMB1ByDISM {
+	Write-Output "Enabling SMB 1.0 protocol...ByDISM..."
+	Dism /online /Enable-Feature /FeatureName:"SMB1Protocol-Client" /All /NoRestart
+	Dism /online /Disable-Feature /FeatureName:"SMB1Protocol-Server" /NoRestart
+	Dism /online /Disable-Feature /FeatureName:"SMB1Protocol-Depreacation" /NoRestart
+}
+
+# 2022-07-18 Larry Add DisableSMB1ByDISM
+Function DisableSMB1ByDISM {
+	Write-Output "Disabling SMB 1.0 protocol...ByDISM..."
+	Dism /online /Disable-Feature /FeatureName:"SMB1Protocol-Client" /NoRestart
+}
+
+
 # Disable SMB Server - Completely disables file and printer sharing, but leaves the system able to connect to another SMB server as a client
 # Note: Do not run this if you plan to use Docker and Shared Drives (as it uses SMB internally), see https://github.com/Disassembler0/Win10-Initial-Setup-Script/issues/216
 Function DisableSMBServer {
@@ -2044,28 +2059,28 @@ Function ShowTaskbarSearchBox {
 #2022-06-22 Larry Add SetFavoriteTaskbar
 Function SetFavoriteTaskbar {
 	Write-Output "Set Favorite Taskbar..."
-	Start-Process -FilePath "runbat\FavoriteTaskbar.bat" -Wait -WindowStyle Hidden
+	Start-Process -FilePath "$PSScriptRoot\runbat\FavoriteTaskbar.bat" -Wait -WindowStyle Hidden
 	Start-Sleep -s 2
 }
 
 #2022-06-22 Larry Add SetFactoryDefaultTaskbar
 Function SetFactoryDefaultTaskbar {
 	Write-Output "Set Factory Default Taskbar..."
-	Start-Process -FilePath "runbat\FactoryDefaultTaskbar.bat" -Wait -WindowStyle Hidden
+	Start-Process -FilePath "$PSScriptRoot\runbat\FactoryDefaultTaskbar.bat" -Wait -WindowStyle Hidden
 	Start-Sleep -s 2
 }
 
 #2022-06-22 Larry Add SetTaskbarUP
 Function SetTaskbarUP {
 	Write-Output "Set Taskbar Direction UP..."
-	Start-Process -FilePath "runbat\TaskBar_UP.bat" -Wait -WindowStyle Hidden
+	Start-Process -FilePath "$PSScriptRoot\runbat\TaskBar_UP.bat" -Wait -WindowStyle Hidden
 	Start-Sleep -s 2
 }
 
 #2022-06-22 Larry Add SetTaskbarDOWN
 Function SetTaskbarDOWN {
 	Write-Output "Set Taskbar Direction DOWN..."
-	Start-Process -FilePath "runbat\TaskBar_DOWN.bat" -Wait -WindowStyle Hidden
+	Start-Process -FilePath "$PSScriptRoot\runbat\TaskBar_DOWN.bat" -Wait -WindowStyle Hidden
 	Start-Sleep -s 2
 }
 

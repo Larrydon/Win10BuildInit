@@ -31,7 +31,7 @@ DisableErrorReporting           # EnableErrorReporting
 DisableDiagTrack                # EnableDiagTrack
 DisableWAPPush                  # EnableWAPPush
 # EnableClearRecentFiles        # DisableClearRecentFiles
-# DisableRecentFiles            # EnableRecentFiles
+DisableRecentFiles            # EnableRecentFiles
 
 ### UWP Privacy Tweaks ###
 DisableUWPBackgroundApps        # EnableUWPBackgroundApps
@@ -78,6 +78,7 @@ SetCurrentNetworkPrivate        # SetCurrentNetworkPublic
 # DisableNetDevicesAutoInst     # EnableNetDevicesAutoInst
 # DisableHomeGroups             # EnableHomeGroups
 # DisableSMB1                   # EnableSMB1
+EnableSMB1ByDISM                # DisableSMB1ByDISM
 # DisableSMBServer              # EnableSMBServer
 # DisableNetBIOS                # EnableNetBIOS
 # DisableLLMNR                  # EnableLLMNR
@@ -170,7 +171,7 @@ HideHiddenFiles               # ShowHiddenFiles                 # HideHiddenFile
 # ShowSuperHiddenFiles          # HideSuperHiddenFiles
 # ShowEmptyDrives               # HideEmptyDrives
 # ShowFolderMergeConflicts      # HideFolderMergeConflicts
-EnableNavPaneExpand             # DisableNavPaneExpand
+DisableNavPaneExpand          # EnableNavPaneExpand             # DisableNavPaneExpand
 # ShowNavPaneAllFolders         # HideNavPaneAllFolders
 # ShowNavPaneLibraries          # HideNavPaneLibraries
 # EnableFldrSeparateProcess     # DisableFldrSeparateProcess
