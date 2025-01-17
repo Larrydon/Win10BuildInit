@@ -5,6 +5,48 @@
 # Source: https://github.com/Disassembler0/Win10-Initial-Setup-Script
 ##########
 
+
+
+##########
+# Fork
+# Win 10 / Win11 Initial Setup Script - Tweak library
+# Author: Disassembler <larrydon2008@gmail.com>
+# Version: v1.2.0, 2025-01-14
+# Source: https://github.com/Larrydon/Win10BuildInit
+##########
+
+
+
+##########
+#region Global Function
+##########
+
+#>2025-01-14 Larry Add
+Function Check-Win11OS
+{
+	# 取得作業系統版本資訊
+    	$osVersion = (Get-CimInstance -ClassName Win32_OperatingSystem).Version
+	# Windows 11 的版本號是 10.0.22000 或更高
+	if ($osVersion -ge "10.0.22000")
+	{
+		Write-Host "Running on Windows 11." -ForegroundColor Green
+		return $true
+	}
+	else
+	{
+		Write-Host "Warning: This script is optimized for Windows 11. Current OS version: $osVersion" -ForegroundColor Yellow
+		return $false
+	}
+}
+#<End
+
+##########
+#endregion Global Function
+##########
+
+
+
+
 ##########
 #region Privacy Tweaks
 ##########
@@ -1253,7 +1295,6 @@ Function DisableSMB1ByDISM {
 	Dism /online /Disable-Feature /FeatureName:"SMB1Protocol-Client" /NoRestart
 }
 
-
 # Disable SMB Server - Completely disables file and printer sharing, but leaves the system able to connect to another SMB server as a client
 # Note: Do not run this if you plan to use Docker and Shared Drives (as it uses SMB internally), see https://github.com/Disassembler0/Win10-Initial-Setup-Script/issues/216
 Function DisableSMBServer {
@@ -1425,17 +1466,43 @@ Function DisableRemoteDesktop {
 	Disable-NetFirewallRule -Name "RemoteDesktop*"
 }
 
+#>2025-01-15 Larry Add
 #2022-06-22 Larry Add EnableGuestAccess
-Function EnableGuestAccess {
+Function EnableGuestAccess
+{
 	Write-Output "Enabling Guest Access..."
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" -Name "AllowInsecureGuestAuth" -Type DWord -Value 1
+	
+	if (-not (Check-Win11OS))
+	{
+		Write-Host "Continuing with caution on a non-Windows 11 system..." -ForegroundColor Yellow
+	}
+	else
+	{
+		Write-Host "Proceeding with Windows 11 optimizations." -ForegroundColor Green		
+		Write-Host "Disable Microsoft network client:Digitally sign communications(always)" -ForegroundColor Green
+		Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" -Name "RequireSecuritySignature" -Type DWord -Value 0
+	}
 }
 
 #2022-06-22 Larry Add DisableGuestAccess
-Function DisableGuestAccess {
+Function DisableGuestAccess
+{
 	Write-Output "Disabling Guest Access..."
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" -Name "AllowInsecureGuestAuth" -Type DWord -Value 0
+	
+	if (-not (Check-Win11OS))
+	{
+		Write-Host "Continuing with caution on a non-Windows 11 system..." -ForegroundColor Yellow
+	}
+	else
+	{
+		Write-Host "Proceeding with Windows 11 optimizations." -ForegroundColor Green		
+		Write-Host "Enable Microsoft network client:Digitally sign communications(always)" -ForegroundColor Green
+		Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters" -Name "RequireSecuritySignature" -Type DWord -Value 1
+	}
 }
+#<End
 
 ##########
 #endregion Network Tweaks
@@ -2070,18 +2137,46 @@ Function SetFactoryDefaultTaskbar {
 	Start-Sleep -s 2
 }
 
+#>2025-01-14 Larry Add
 #2022-06-22 Larry Add SetTaskbarUP
 Function SetTaskbarUP {
 	Write-Output "Set Taskbar Direction UP..."
-	Start-Process -FilePath "$PSScriptRoot\runbat\TaskBar_UP.bat" -Wait -WindowStyle Hidden
-	Start-Sleep -s 2
+	
+	if (-not (Check-Win11OS))
+	{
+		Write-Host "Continuing with caution on a non-Windows 11 system..." -ForegroundColor Yellow
+		
+		Start-Process -FilePath "$PSScriptRoot\runbat\TaskBar_UP.bat" -Wait -WindowStyle Hidden
+		Start-Sleep -s 2
+	}
+	else
+	{
+		Write-Host "Proceeding with Windows 11 optimizations." -ForegroundColor Green		
+		Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Type DWord -Value 0
+		Write-Host "Windows 11 Can't Change Taskbar Direction..." -ForegroundColor Yellow
+	}
 }
+#<End
 
 #2022-06-22 Larry Add SetTaskbarDOWN
 Function SetTaskbarDOWN {
 	Write-Output "Set Taskbar Direction DOWN..."
-	Start-Process -FilePath "$PSScriptRoot\runbat\TaskBar_DOWN.bat" -Wait -WindowStyle Hidden
-	Start-Sleep -s 2
+	
+	if (-not (Check-Win11OS))
+	{
+		Write-Host "Continuing with caution on a non-Windows 11 system..." -ForegroundColor Yellow
+		
+		Start-Process -FilePath "$PSScriptRoot\runbat\TaskBar_DOWN.bat" -Wait -WindowStyle Hidden
+		Start-Sleep -s 2
+	}
+	else
+	{
+		Write-Host "Proceeding with Windows 11 optimizations." -ForegroundColor Green		
+		Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Type DWord -Value 1
+		Write-Host "Windows 11 Can't Change Taskbar Direction..." -ForegroundColor Yellow
+	}
+	
+	
 }
 
 # Hide Task View button
@@ -2571,6 +2666,47 @@ Function EnableF1HelpKey {
 	Write-Output "Enabling F1 Help key..."
 	Remove-Item "HKCU:\Software\Classes\TypeLib\{8cec5860-07a1-11d9-b15e-000d56bfe6ee}\1.0\0" -Recurse -ErrorAction SilentlyContinue
 }
+
+#>2025-01-14 Larry Add
+Function ShowClassRightClickMenu
+{
+	if (-not (Check-Win11OS))
+	{
+		Write-Host "Continuing with caution on a non-Windows 11 system..." -ForegroundColor Yellow
+	}
+	else
+	{
+		Write-Host "Proceeding with Windows 11 optimizations." -ForegroundColor Green
+		Write-Output "Show Class Right-Click Menu..."
+		# 定義要新增的註冊表路徑
+		$registryPath = "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32"
+		if (!(Test-Path $registryPath))
+		{
+			# 新增註冊表路徑
+			New-Item -Path $registryPath -Force | Out-Null
+			Write-Host "Registry path established: $registryPath" -ForegroundColor Green
+		}
+
+		# 新增或更新默認值 (Default) 為空
+		Set-ItemProperty -Path $registryPath -Name "(default)" -Value "" -Force
+		Write-Host "The default value is set to empty." -ForegroundColor Green		
+	}
+}
+
+# Hide Class Right-Click Menu
+Function HideClassRightClickMenu {
+	Write-Output "Hide Class Right-Click Menu..."
+	# 定義註冊表路徑
+    $registryPath = "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}"
+
+    # 檢查註冊表路徑是否存在
+    if (Test-Path $registryPath) {
+        # 刪除註冊表鍵
+        Remove-Item -Path $registryPath -Recurse -Force
+        Write-Host "Registry key deleted successfully: $registryPath" -ForegroundColor Green
+    }
+}
+#<End
 
 ##########
 #endregion UI Tweaks

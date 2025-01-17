@@ -5,8 +5,10 @@
 # Source: https://github.com/Disassembler0/Win10-Initial-Setup-Script
 ##########
 
+
 ### Require administrator privileges ###
 RequireAdmin
+
 
 ### Privacy Tweaks ###
 DisableTelemetry                # EnableTelemetry
@@ -33,6 +35,7 @@ DisableWAPPush                  # EnableWAPPush
 # EnableClearRecentFiles        # DisableClearRecentFiles
 DisableRecentFiles            # EnableRecentFiles
 
+
 ### UWP Privacy Tweaks ###
 DisableUWPBackgroundApps        # EnableUWPBackgroundApps
 # DisableUWPVoiceActivation     # EnableUWPVoiceActivation
@@ -50,6 +53,7 @@ DisableUWPBackgroundApps        # EnableUWPBackgroundApps
 # DisableUWPDiagInfo            # EnableUWPDiagInfo
 # DisableUWPFileSystem          # EnableUWPFileSystem
 # DisableUWPSwapFile            # EnableUWPSwapFile
+
 
 ### Security Tweaks ###
 # SetUACLow                     # SetUACHigh
@@ -72,6 +76,7 @@ EnableF8BootMenu                # DisableF8BootMenu
 # DisableRecoveryAndReset       # EnableRecoveryAndReset
 SetDEPOptOut                    # SetDEPOptIn
 
+
 ### Network Tweaks ###
 SetCurrentNetworkPrivate        # SetCurrentNetworkPublic
 # SetUnknownNetworksPrivate     # SetUnknownNetworksPublic
@@ -93,6 +98,7 @@ DisableIPv6                   # EnableIPv6
 DisableRemoteAssistance         # EnableRemoteAssistance
 # EnableRemoteDesktop           # DisableRemoteDesktop
 EnableGuestAccess               # DisableGuestAccess
+
 
 ### Service Tweaks ###
 # DisableUpdateMSRT             # EnableUpdateMSRT
@@ -120,6 +126,7 @@ DisableSleepButton            # EnableSleepButton
 DisableSleepTimeout           # EnableSleepTimeout
 # DisableFastStartup            # EnableFastStartup
 # DisableAutoRebootOnCrash      # EnableAutoRebootOnCrash
+
 
 ### UI Tweaks ###
 DisableActionCenter             # EnableActionCenter
@@ -163,6 +170,11 @@ EnableNumlock                 # DisableNumlock
 # DisableChangingSoundScheme    # EnableChangingSoundScheme
 # EnableVerboseStatus           # DisableVerboseStatus
 DisableF1HelpKey                # EnableF1HelpKey
+
+#>2025-01-14 Larry Add
+ShowClassRightClickMenu         # HideClassRightClickMenu
+#<End
+
 
 ### Explorer UI Tweaks ###
 # ShowExplorerTitleFullPath     # HideExplorerTitleFullPath
@@ -212,6 +224,7 @@ Hide3DObjectsFromThisPC         # Show3DObjectsInThisPC
 DisableThumbnailCache           # EnableThumbnailCache
 DisableThumbsDBOnNetwork        # EnableThumbsDBOnNetwork
 
+
 ### Application Tweaks ###
 DisableOneDrive                 # EnableOneDrive
 UninstallOneDrive               # InstallOneDrive
@@ -248,6 +261,7 @@ UninstallXPSPrinter             # InstallXPSPrinter
 RemoveFaxPrinter                # AddFaxPrinter
 # UninstallFaxAndScan           # InstallFaxAndScan
 
+
 ### Server Specific Tweaks ###
 # HideServerManagerOnLogin      # ShowServerManagerOnLogin
 # DisableShutdownTracker        # EnableShutdownTracker
@@ -256,10 +270,14 @@ RemoveFaxPrinter                # AddFaxPrinter
 # DisableIEEnhancedSecurity     # EnableIEEnhancedSecurity
 # EnableAudio                   # DisableAudio
 
+
 ### Unpinning ###
 # UnpinStartMenuTiles
 # UnpinTaskbarIcons
 
+
 ### Auxiliary Functions ###
 WaitForKey
 Restart
+
+
