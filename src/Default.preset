@@ -140,7 +140,7 @@ DisableAccessibilityKeys        # EnableAccessibilityKeys
 ShowTaskManagerDetails          # HideTaskManagerDetails
 ShowFileOperationsDetails       # HideFileOperationsDetails
 EnableFileDeleteConfirm       # DisableFileDeleteConfirm
-HideTaskbarSearch               # ShowTaskbarSearchIcon         # ShowTaskbarSearchBox
+ShowTaskbarSearchBox			# HideTaskbarSearch               # ShowTaskbarSearchIcon         # ShowTaskbarSearchBox
 SetFavoriteTaskbar            # SetFactoryDefaultTaskbar      # SetFavoriteTaskbar
 SetTaskbarUP                  # SetTaskbarDOWN                # SetTaskbarUP 
 HideTaskView                    # ShowTaskView
